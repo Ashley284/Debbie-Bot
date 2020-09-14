@@ -9,6 +9,27 @@ Object.keys(botCommands).forEach(key => {
     client.commands.set(botCommands[key].name, botCommands[key]);
 });
 
+client.statusHook = new Discord.WebhookClient("755126404974248018", "TOKEN")
+
+//Shard ready
+client.on("shardReady", async shard => {
+  client.statusHook.send(`Shard **#${shard}** ready on **${client.guilds.cache.size}** servers and **${client.users.cache.size}** users.`)
+})
+
+//Shard disconnect
+client.on("shardDisconnect", async shard => {
+  client.statusHook.send(`Shard **#${shard}** disconnected from its servers and users temporarily...`)
+})
+
+//Shard reconnecting
+client.on("shardReconnecting", async shard => {
+  client.statusHook.send(`Shard **#${shard}** reconnection in progress on the servers containing this shard...`)
+})
+
+//Shard resume
+client.on("shardResume", async shard => {
+  client.statusHook.send(`Shard **#${shard}** successfully reconnected to **${client.guilds.cache.size}** servers and **${client.users.cache.size}** users.`)
+})
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
     if (oldMessage == newMessage || oldMessage.content == newMessage.content) return;
@@ -19,14 +40,14 @@ client.on("ready", () => {
     //space bot list
     const snekfetch = require('snekfetch');
     snekfetch.post(`https://space-bot-list.xyz/api/bots/746228910743879782`)
-        .set('Authorization', "TOKEN")
+        .set('Authorization', "NVKqdz4KPPjILzz9jipNVJMyrDZ-IydlRN0hGw2Gpizm4Lx4dk")
         .send({ guilds: client.guilds.cache.size, users: client.users.cache.size })
         .then(req => req.body);
 
     console.log(`${client.user.tag} has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`);
     client.user.setStatus(`online`);
     client.user.setActivity(`${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds`)
-
+    console.log(client.guilds.cache.map(c => c.name+"| "+ c.id+"| "+ c.owner.user.tag+"| "+ c.ownerID))
 });
 
 
